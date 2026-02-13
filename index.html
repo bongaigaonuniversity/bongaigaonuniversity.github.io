@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bongaigaon University - Student Notes Repository</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .university-logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .features h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            flex-shrink: 0;
+        }
+
+        .feature-text h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .feature-text p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .departments {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .departments h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .dept-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .dept-tag:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            color: #666;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="university-logo">🎓</div>
+            <h1>Bongaigaon University</h1>
+            <p class="subtitle">Student Notes Repository - Arts & Commerce</p>
+            <p class="subtitle" style="font-size: 0.95em; color: #888; margin-top: -10px;">📚 Covering H.S. (Higher Secondary), Bachelor's & Master's Level Courses</p>
+            <div class="disclaimer">
+                ⚠️ <strong>Note:</strong> This is an unofficial student-driven repository, not affiliated with Bongaigaon University administration.
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="contributors">∞</span>
+                    <span class="stat-label">Contributors</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="notes">∞</span>
+                    <span class="stat-label">Notes Shared</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="subjects">20+</span>
+                    <span class="stat-label">Subjects</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <span class="card-icon">📚</span>
+                <h2>Browse Notes</h2>
+                <p>Access comprehensive notes for all Arts and Commerce subjects. Organized by semester and department.</p>
+                <a href="#" class="btn" onclick="alert('Navigate to your notes repository folder structure')">Explore Notes</a>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">✏️</span>
+                <h2>Contribute</h2>
+                <p>Share your notes with fellow students. Teachers and students welcome to contribute quality content.</p>
+                <a href="#" class="btn btn-secondary" onclick="alert('Create a pull request or upload to the appropriate folder')">Share Notes</a>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">💬</span>
+                <h2>Discussions</h2>
+                <p>Ask questions, discuss topics, and collaborate with peers and teachers.</p>
+                <a href="#" class="btn" onclick="alert('Visit the GitHub Discussions tab')">Join Discussion</a>
+            </div>
+        </div>
+
+        <div class="departments">
+            <h2>📖 Available Departments</h2>
+            <div class="dept-grid">
+                <div class="dept-tag">English</div>
+                <div class="dept-tag">Economics</div>
+                <div class="dept-tag">Political Science</div>
+                <div class="dept-tag">History</div>
+                <div class="dept-tag">Philosophy</div>
+                <div class="dept-tag">Sociology</div>
+                <div class="dept-tag">Assamese</div>
+                <div class="dept-tag">Hindi</div>
+                <div class="dept-tag">Commerce</div>
+                <div class="dept-tag">Mathematics</div>
+                <div class="dept-tag">Bengali</div>
+                <div class="dept-tag">Education</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Why Use This Repository?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <div class="feature-text">
+                        <h3>Organized by Level</h3>
+                        <p>Notes for H.S., Bachelor's, and Master's courses, structured by semester and subject</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🤝</span>
+                    <div class="feature-text">
+                        <h3>Community Driven</h3>
+                        <p>Built by students, for students, with teacher contributions</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <div class="feature-text">
+                        <h3>Always Updated</h3>
+                        <p>Regular updates with latest notes and study materials</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📱</span>
+                    <div class="feature-text">
+                        <h3>Access Anywhere</h3>
+                        <p>Download notes in PDF, DOCX, or Markdown formats</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⭐</span>
+                    <div class="feature-text">
+                        <h3>Quality Content</h3>
+                        <p>Peer-reviewed notes ensuring accuracy and relevance</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🆓</span>
+                    <div class="feature-text">
+                        <h3>Completely Free</h3>
+                        <p>Open source and accessible to all students</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features" style="text-align: center;">
+            <h2>📋 How to Contribute</h2>
+            <div style="text-align: left; max-width: 700px; margin: 20px auto;">
+                <ol style="color: #666; line-height: 2;">
+                    <li><strong>Fork</strong> this repository to your GitHub account</li>
+                    <li><strong>Create</strong> a folder for your department/semester if it doesn't exist</li>
+                    <li><strong>Upload</strong> your notes in PDF, DOCX, or Markdown format</li>
+                    <li><strong>Add</strong> a clear filename: <code>Subject_Topic_YourName.pdf</code></li>
+                    <li><strong>Submit</strong> a pull request with a brief description</li>
+                </ol>
+                <p style="color: #666; margin-top: 15px; font-style: italic;">
+                    Teachers: We especially welcome contributions from faculty members to ensure quality and accuracy!
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Bongaigaon University Student Notes Repository</strong></p>
+            <p style="margin-top: 10px;">Built with ❤️ by students, for students</p>
+            <p style="margin-top: 15px;">
+                <a href="#" onclick="alert('Link to your GitHub repo')">View on GitHub</a> • 
+                <a href="#" onclick="alert('Link to contribution guidelines')">Contribution Guidelines</a> • 
+                <a href="#" onclick="alert('Link to code of conduct')">Code of Conduct</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.85em; color: #999;">
+                Not officially affiliated with Bongaigaon University
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple animation for stats
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Animate stats on page load
+        window.addEventListener('load', () => {
+            // You can update these values based on your actual GitHub stats
+            animateValue("contributors", 0, 25, 2000);
+            animateValue("notes", 0, 150, 2000);
+        });
+    </script>
+</body>
+</html>
