@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,77 @@
             margin: 0 auto;
             padding: 20px;
         }
+        .contribute {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+         .btn-primary {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+         .upload-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
+        .upload-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #4facfe;
+        }
+
+        .upload-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .file-icon {
+            font-size: 2em;
+            margin-right: 20px;
+        }
+        .upload-details {
+            flex: 1;
+        }
+
+        .upload-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .upload-meta {
+            font-size: 0.85em;
+            color: #666;
+        }
+        .contribute h2 {
+            color: #4facfe;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .contribute p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -268,15 +339,15 @@
             </div>
             <div class="stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="contributors">∞</span>
+                    <span class="stat-number" id="contributors">1</span>
                     <span class="stat-label">Contributors</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="notes">∞</span>
+                    <span class="stat-number" id="notes">0</span>
                     <span class="stat-label">Notes Shared</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="subjects">20+</span>
+                    <span class="stat-number" id="subjects">10+</span>
                     <span class="stat-label">Subjects</span>
                 </div>
             </div>
@@ -319,7 +390,7 @@
                 <div class="dept-tag">Commerce</div>
                 <div class="dept-tag">Mathematics</div>
                 <div class="dept-tag">Bengali</div>
-                <div class="dept-tag" onclick="window.location.href='https://bongaigaonuniversity.github.io/education/';">Education</div>
+                <div class="dept-tag" onclick="window.location.href='./education/index.html';">Education</div>
             </div>
         </div>
 
@@ -370,23 +441,19 @@
                 </div>
             </div>
         </div>
+    
 
         <div class="features" style="text-align: center;">
-            <h2>📋 How to Contribute</h2>
+            <h2>Upload Notes</h2>
             <div style="text-align: left; max-width: 700px; margin: 20px auto;">
-                <ol style="color: #666; line-height: 2;">
-                    <li><strong>Fork</strong> this repository to your GitHub account</li>
-                    <li><strong>Create</strong> a folder for your department/semester if it doesn't exist</li>
-                    <li><strong>Upload</strong> your notes in PDF, DOCX, or Markdown format</li>
-                    <li><strong>Add</strong> a clear filename: <code>Subject_Topic_YourName.pdf</code></li>
-                    <li><strong>Submit</strong> a pull request with a brief description</li>
-                </ol>
-                <p style="color: #666; margin-top: 15px; font-style: italic;">
-                    Teachers: We especially welcome contributions from faculty members to ensure quality and accuracy!
-                </p>
+                <h1 style="font-size: 2em; text-align: center;">📤</h1>
             </div>
         </div>
-
+        <div class="contribute">
+            <h2>📤 Share Your Knowledge</h2>
+            <p>Have notes to contribute? Help fellow Education students by sharing your materials!</p>
+            <a href="./upload.html" class="btn-primary">Upload Notes</a>
+        </div>
         <footer>
             <p><strong>Bongaigaon University Student Notes Repository</strong></p>
             <p style="margin-top: 10px;">Built with ❤️ by students, for students</p>
@@ -422,8 +489,8 @@
         // Animate stats on page load
         window.addEventListener('load', () => {
             // You can update these values based on your actual GitHub stats
-            animateValue("contributors", 0, 25, 2000);
-            animateValue("notes", 0, 150, 2000);
+            animateValue("contributors", 0, 1, 2000);
+            animateValue("notes", 0, 1, 2000);
         });
     </script>
 </body>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Notes - Bongaigaon University</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .upload-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .breadcrumb {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Upload Form */
+        .upload-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* File Upload Area */
+        .file-upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .file-upload-area:hover {
+            background: #e9ecef;
+            border-color: #764ba2;
+        }
+
+        .file-upload-area.dragover {
+            background: #667eea;
+            border-color: #764ba2;
+            color: white;
+        }
+
+        .file-upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .file-upload-text {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-hint {
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-item-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .file-item-details {
+            flex: 1;
+        }
+
+        .file-item-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .file-item-size {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .file-item-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .file-item-remove:hover {
+            background: #c0392b;
+        }
+
+        /* Radio/Checkbox Groups */
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Guidelines */
+        .guidelines {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .guidelines h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guidelines ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .guidelines li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #666;
+        }
+
+        .guidelines li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .upload-form {
+                padding: 25px;
+            }
+
+            .radio-group,
+            .checkbox-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="upload-icon">📤</div>
+            <h1>Upload Notes</h1>
+            <p class="subtitle">Share your knowledge with fellow students</p>
+            <p class="breadcrumb">
+                <a href="/index.html">Home</a> / Upload Notes
+            </p>
+        </header>
+
+        <div class="success-message" id="successMessage">
+            <h3>✅ Upload Successful!</h3>
+            <p>Your notes have been submitted and will be reviewed by our team. Thank you for contributing!</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Please fill in all required fields and upload at least one file.
+        </div>
+
+        <div class="upload-form">
+            <form id="uploadForm">
+                <!-- Your Information -->
+                <h3 style="color: #667eea; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
+                    👤 Your Information
+                </h3>
+
+                <div class="form-group">
+                    <label for="uploaderName">Your Name <span class="required">*</span></label>
+                    <input type="text" id="uploaderName" name="uploaderName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="uploaderEmail">Email <span class="required">*</span></label>
+                    <input type="email" id="uploaderEmail" name="uploaderEmail" placeholder="your.email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>You are a: <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="uploaderType" value="student" required>
+                            <span>Student</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="uploaderType" value="teacher">
+                            <span>Teacher</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="uploaderType" value="alumni">
+                            <span>Alumni</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Note Details -->
+                <h3 style="color: #667eea; margin: 30px 0 20px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
+                    📚 Note Details
+                </h3>
+
+                <div class="form-group">
+                    <label for="noteTitle">Note Title <span class="required">*</span></label>
+                    <input type="text" id="noteTitle" name="noteTitle" placeholder="e.g., Educational Psychology - Chapter 5" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department <span class="required">*</span></label>
+                    <select id="department" name="department" required>
+                        <option value="">-- Select Department --</option>
+                        <option value="education">Education</option>
+                        <option value="english">English</option>
+                        <option value="economics">Economics</option>
+                        <option value="political-science">Political Science</option>
+                        <option value="history">History</option>
+                        <option value="philosophy">Philosophy</option>
+                        <option value="sociology">Sociology</option>
+                        <option value="assamese">Assamese</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="bengali">Bengali</option>
+                        <option value="commerce">Commerce</option>
+                        <option value="mathematics">Mathematics</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="courseLevel">Course Level <span class="required">*</span></label>
+                    <select id="courseLevel" name="courseLevel" required>
+                        <option value="">-- Select Course Level --</option>
+                        <option value="hs">H.S. (Higher Secondary)</option>
+                        <option value="bachelors">Bachelor's Degree</option>
+                        <option value="masters">Master's Degree</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="semester">Semester <span class="required">*</span></label>
+                    <select id="semester" name="semester" required>
+                        <option value="">-- Select Semester --</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Type: <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="uploadType" value="nt" required>
+                            <span>Notes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="uploadType" value="ep">
+                            <span>Exam Preparation</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="uploadType" value="sm">
+                            <span>Summary</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <h3 style="color: #667eea; margin: 30px 0 20px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
+                    📎 Upload Files
+                </h3>
+
+                <div class="form-group">
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <span class="file-upload-icon">📁</span>
+                        <div class="file-upload-text">
+                            <strong>Click to upload</strong> or drag and drop
+                        </div>
+                        <div class="file-upload-hint">
+                            PDF, DOCX, TXT, MD (Max 10MB per file)
+                        </div>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.txt,.md">
+                    </div>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    📤 Submit Notes
+                </button>
+            </form>
+        </div>
+
+        <div class="guidelines">
+            <h2>📋 Contribution Guidelines</h2>
+            <ul>
+                <li>Make sure your notes are clear and legible</li>
+                <li>Use descriptive titles (include subject, topic, and your name)</li>
+                <li>Accepted formats: PDF, DOCX, TXT, Markdown</li>
+                <li>Maximum file size: 10MB per file</li>
+                <li>Check for accuracy before uploading</li>
+                <li>Respect copyright - only upload your own work or properly attributed content</li>
+                <li>Your notes will be reviewed before being published</li>
+                <li>You'll receive a confirmation email once your notes are approved</li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+
+        const SUPABASE_URL = 'https://iqlixytyoblhlaflpklt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlxbGl4eXR5b2JsaGxhZmxwa2x0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyMzY0NDEsImV4cCI6MjA4NjgxMjQ0MX0.tGlvM3uokfl0mBSKQqoPhu-_m5MtrtiNqIRWDSiPnjc';
+        const BUCKET_NAME = 'bongaigaon university';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileList = document.getElementById('fileList');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let selectedFiles = [];
+
+        // Click to upload
+        fileUploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // File selection
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Drag and drop
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFiles(files) {
+            for (let file of files) {
+                // Check file size (10MB limit)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`${file.name} is too large. Maximum size is 10MB.`);
+                    continue;
+                }
+
+                // Check file type
+                const allowedTypes = ['.pdf', '.docx', '.doc', '.txt', '.md'];
+                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+                if (!allowedTypes.includes(fileExt)) {
+                    alert(`${file.name} is not an allowed file type.`);
+                    continue;
+                }
+
+                selectedFiles.push(file);
+            }
+
+            displayFiles();
+        }
+
+        function displayFiles() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span class="file-item-icon">📄</span>
+                    <div class="file-item-details">
+                        <div class="file-item-name">${file.name}</div>
+                        <div class="file-item-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <button type="button" class="file-item-remove" onclick="removeFile(${index})">Remove</button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displayFiles();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Form submission
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide previous messages
+            successMessage.classList.remove('show');
+            errorMessage.classList.remove('show');
+            const userName = document.getElementById('uploaderName').value.trim();
+            const userEmail = document.getElementById('uploaderEmail').value.trim();
+            const uploaderType = document.querySelector('input[name="uploaderType"]:checked');
+            const noteTitle = document.getElementById('noteTitle').value.trim();
+            const department = document.getElementById('department').value;
+            const courseLevel = document.getElementById('courseLevel').value;
+            const semester = document.getElementById('semester').value;
+            const uploadType = document.querySelector('input[name="uploadType"]:checked');
+
+            // Validate
+            if (selectedFiles.length === 0 || !userName || !userEmail || !uploaderType || !noteTitle || !department || !courseLevel || !semester || !uploadType) {
+                errorMessage.textContent = 'Please fill in all required fields.';
+                errorMessage.classList.add('show');
+                window.scrollTo(0, 0);
+                return;
+            }
+
+            // Get form data
+            const formData = new FormData(uploadForm);
+            
+            // Add files to FormData
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+
+            // Get selected tags
+            const tags = Array.from(document.querySelectorAll('input[name="tags"]:checked'))
+                .map(cb => cb.value);
+            formData.append('tagsArray', JSON.stringify(tags));
+
+            
+            console.log('Form Data:', Object.fromEntries(formData));
+            console.log('Files:', selectedFiles);
+            const filenamePrefix = `/${department}/${courseLevel}/sem${semester}/${uploadType.value}_${userName.replace(/\s+/g, '=')}_${uploaderType.value}_${userEmail}_${Date.now()}`;
+            // Simulate upload (remove this in production)
+            await simulateUpload(filenamePrefix);
+
+            // Show success message
+            successMessage.classList.add('show');
+            window.scrollTo(0, 0);
+
+            // Reset form
+            uploadForm.reset();
+            selectedFiles = [];
+            displayFiles();
+        });
+
+        // Simulate upload for demo purposes
+        async function simulateUpload(name) {
+            for (const file of selectedFiles) {
+                const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(name + '_' + file.name, file);
+                if (error) {
+                    errorMessage.textContent = `Error uploading ${file.name}: ${error.message}`;
+                    errorMessage.classList.add('show');
+                    window.scrollTo(0, 0);
+                    return;
+                }
+            }
+        }
+
+        // Make removeFile available globally
+        window.removeFile = removeFile;
+    </script>
+</body>
+</html>
