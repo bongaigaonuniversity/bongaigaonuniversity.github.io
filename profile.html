@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Bongaigaon University Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 40px; width: 100%; max-width: 500px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+        .info-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8em; color: #888; text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
+        .view-mode { font-size: 1.1em; color: #333; font-weight: 500; display: block; }
+        .edit-mode { display: none; width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: inherit; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .btn-row { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 12px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; text-align: center; text-decoration: none; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #eee; color: #666; }
+        .btn-home { background: #4caf50; color: white; }
+        .btn-danger {
+    background: #e74c3c;
+    color: white;
+    margin-top: 5px;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h2 style="margin-bottom: 20px; color: #667eea;">Account Settings</h2>
+        
+        <div class="info-group">
+            <label>Full Name</label>
+            <span id="nameView" class="view-mode">---</span>
+            <input type="text" id="nameEdit" class="edit-mode">
+        </div>
+
+        <div class="info-group">
+            <label>Department</label>
+            <span id="deptView" class="view-mode">---</span>
+            <select id="deptEdit" class="edit-mode">
+                <option value="none">None</option>
+                <option value="education">Education</option>
+                <option value="english">English</option>
+                <option value="economics">Economics</option>
+                <option value="political-science">Political Science</option>
+                <option value="history">History</option>
+                <option value="philosophy">Philosophy</option>
+                <option value="sociology">Sociology</option>
+                <option value="assamese">Assamese</option>
+                <option value="hindi">Hindi</option>
+                <option value="bengali">Bengali</option>
+                <option value="commerce">Commerce</option>
+                <option value="mathematics">Mathematics</option>
+            </select>
+        </div>
+
+        <div class="info-group">
+            <label>User Type</label>
+            <span id="roleView" class="view-mode">---</span>
+            <select id="roleEdit" class="edit-mode">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="info-group">
+            <label>Bio</label>
+            <span id="bioView" class="view-mode">---</span>
+            <textarea id="bioEdit" class="edit-mode"></textarea>
+        </div>
+
+       <div class="btn-group">
+    <div class="btn-row">
+        <button id="editBtn" class="btn btn-secondary" onclick="toggleEdit(true)">Edit Profile</button>
+        <button id="saveBtn" class="btn btn-primary edit-mode" onclick="saveChanges()">Save Changes</button>
+        <button id="cancelBtn" class="btn btn-secondary edit-mode" onclick="toggleEdit(false)">Cancel</button>
+    </div>
+    <a href="index.html" class="btn btn-home">🏠 Back to Home</a>
+    <button class="btn btn-danger" onclick="handleSignOut()">🚪 Sign Out</button>
+</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged,signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+    apiKey: "AIzaSyAG2d7QxtzqF5IqluiEuLlFZJ30KpA4pB0",
+    authDomain: "bongaigaon-university.firebaseapp.com",
+    projectId: "bongaigaon-university",
+    storageBucket: "bongaigaon-university.firebasestorage.app",
+    messagingSenderId: "465515357026",
+    appId: "1:465515357026:web:8dcc87ab7048f24da1823b",
+    measurementId: "G-Z6H339XCQC",
+    databaseURL: "https://bongaigaon-university-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let userUid = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userUid = user.uid;
+                loadProfile();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function loadProfile() {
+            const snapshot = await get(ref(db, `users/${userUid}/profile`));
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                document.getElementById('nameView').textContent = data.fullName;
+                document.getElementById('nameEdit').value = data.fullName;
+                
+                // Set the department view and dropdown
+                const deptDisplay = data.department.charAt(0).toUpperCase() + data.department.slice(1).replace('-', ' ');
+                document.getElementById('deptView').textContent = deptDisplay;
+                document.getElementById('deptEdit').value = data.department;
+                
+                document.getElementById('roleView').textContent = data.userType;
+                document.getElementById('roleEdit').value = data.userType;
+                document.getElementById('bioView').textContent = data.bio || "No bio.";
+                document.getElementById('bioEdit').value = data.bio || "";
+            }
+        }
+
+        window.toggleEdit = (isEditing) => {
+            const views = document.querySelectorAll('.view-mode');
+            const edits = document.querySelectorAll('.edit-mode');
+            views.forEach(v => v.style.display = isEditing ? 'none' : 'block');
+            edits.forEach(e => e.style.display = isEditing ? 'block' : 'none');
+            document.getElementById('editBtn').style.display = isEditing ? 'none' : 'block';
+        };
+        window.handleSignOut = async () => {
+    // Optional: Confirm with the user first
+    if (confirm("Are you sure you want to sign out?")) {
+        try {
+            await signOut(auth);
+            console.log("User signed out successfully.");
+            // Redirect to login page
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error("Error signing out:", error.message);
+            alert("Logout failed. Please try again.");
+        }
+    }
+};
+
+        window.saveChanges = async () => {
+            const updates = {
+                fullName: document.getElementById('nameEdit').value,
+                department: document.getElementById('deptEdit').value,
+                userType: document.getElementById('roleEdit').value,
+                bio: document.getElementById('bioEdit').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                await update(ref(db, `users/${userUid}/profile`), updates);
+                alert("Profile updated successfully!");
+                location.reload();
+            } catch (e) {
+                alert("Error updating profile: " + e.message);
+            }
+        };
+    </script>
+</body>
+</html>

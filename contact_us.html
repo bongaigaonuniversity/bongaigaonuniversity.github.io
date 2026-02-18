@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Bongaigaon University Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 40px 20px; color: #333;
+        }
+        .contact-container { max-width: 900px; margin: 0 auto; }
+        
+        /* Header Card */
+        .header-card {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .contact-icon { font-size: 4em; margin-bottom: 15px; display: block; }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .email-display { font-weight: 600; color: #764ba2; font-size: 1.1em; }
+
+        /* Grid Layout for Queries */
+        .query-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .query-card {
+            background: white; border-radius: 15px; padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s;
+            display: flex; flex-direction: column; align-items: flex-start;
+        }
+        .query-card:hover { transform: translateY(-5px); }
+        .card-icon { font-size: 2em; margin-bottom: 15px; }
+        .query-card h3 { color: #667eea; margin-bottom: 10px; }
+        .query-card p { font-size: 0.9em; color: #666; margin-bottom: 20px; flex-grow: 1; }
+        
+        .action-btn {
+            width: 100%; padding: 12px; border-radius: 8px; border: none;
+            background: #f0f4ff; color: #667eea; font-weight: 600; cursor: pointer;
+            text-decoration: none; text-align: center; transition: 0.2s;
+        }
+        .action-btn:hover { background: #667eea; color: white; }
+
+        /* Footer Navigation */
+        .footer-nav { text-align: center; margin-top: 40px; }
+        .back-btn { color: white; text-decoration: none; font-weight: 600; opacity: 0.8; }
+        .back-btn:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="header-card">
+            <span class="contact-icon">📩</span>
+            <h1>Get in Touch</h1>
+            <p>For any unofficial queries regarding the student portal, email us at:</p>
+            <p class="email-display">bongaigaonuniversityunofficial@gmail.com</p>
+        </div>
+
+        <div class="query-grid">
+            <div class="query-card">
+                <span class="card-icon">⚠️</span>
+                <h3>Account Deletion</h3>
+                <p>Request to permanently remove your profile and uploaded data from our system.</p>
+                <a href="mailto:bongaigaonuniversityunofficial@gmail.com?subject=Account Deletion Request" class="action-btn">Request Delete</a>
+            </div>
+
+            <div class="query-card">
+                <span class="card-icon">📚</span>
+                <h3>Syllabus Update</h3>
+                <p>Spotted an outdated syllabus for Education or Science? Let us know to update it.</p>
+                <a href="mailto:bongaigaonuniversityunofficial@gmail.com?subject=Syllabus Update Query" class="action-btn">Report Outdated</a>
+            </div>
+
+            <div class="query-card">
+                <span class="card-icon">📝</span>
+                <h3>Note Help</h3>
+                <p>Facing issues with the dedicated note viewer or need a specific page for a subject?</p>
+                <a href="mailto:bongaigaonuniversityunofficial@gmail.com?subject=Note Page Help" class="action-btn">Get Technical Help</a>
+            </div>
+
+            <div class="query-card">
+                <span class="card-icon">💡</span>
+                <h3>Other Help</h3>
+                <p>General Queries or Suggestions for Improvement.</p>
+                <a href="mailto:bongaigaonuniversityunofficial@gmail.com?subject=General Inquiry" class="action-btn">Contact Admin</a>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

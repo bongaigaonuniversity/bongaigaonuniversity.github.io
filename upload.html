@@ -544,6 +544,71 @@
             </ul>
         </div>
     </div>
+    <div id="uploadProgressWidget" class="progress-card">
+    <div class="progress-header">
+        <span>Uploading Notes...</span>
+        <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-bar-container">
+        <div id="progressBar" class="progress-fill"></div>
+    </div>
+    <div id="progressStatus" class="progress-status">Preparing files...</div>
+</div>
+
+<style>
+    .progress-card {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 320px;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        z-index: 2000;
+        display: none; /* Hidden by default */
+        border: 1px solid #e0e0e0;
+        animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        font-weight: 600;
+        color: #667eea;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 10px;
+        background: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    .progress-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.3s ease;
+    }
+
+    .progress-status {
+        font-size: 0.85em;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
 
@@ -694,20 +759,132 @@
         });
 
         // Simulate upload for demo purposes
-        async function simulateUpload(name) {
-            for (const file of selectedFiles) {
-                const { error } = await supabaseClient.storage.from(BUCKET_NAME).upload(name + '_' + file.name, file);
-                if (error) {
-                    errorMessage.textContent = `Error uploading ${file.name}: ${error.message}`;
-                    errorMessage.classList.add('show');
-                    window.scrollTo(0, 0);
-                    return;
+       async function simulateUpload(namePrefix) {
+    const widget = document.getElementById('uploadProgressWidget');
+    const bar = document.getElementById('progressBar');
+    const percentText = document.getElementById('progressPercent');
+    const statusText = document.getElementById('progressStatus');
+    const submitBtn = document.querySelector('.btn-submit');
+
+    // Show widget and disable submit button
+    widget.style.display = 'block';
+    submitBtn.disabled = true;
+
+    let totalFiles = selectedFiles.length;
+
+    for (let i = 0; i < totalFiles; i++) {
+        const file = selectedFiles[i];
+        const fileName = `${namePrefix}_${file.name}`;
+        
+        statusText.textContent = `Uploading: ${file.name}`;
+        
+        // Supabase Storage upload with progress tracking
+        const { data, error } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false,
+                // Supabase supports a progress callback in their recent JS clients
+                onUploadProgress: (progress) => {
+                    // Calculate individual file progress
+                    const filePercent = (progress.loaded / progress.total) * 100;
+                    // Calculate overall total progress
+                    const overallPercent = Math.round(((i / totalFiles) * 100) + (filePercent / totalFiles));
+                    
+                    bar.style.width = `${overallPercent}%`;
+                    percentText.textContent = `${overallPercent}%`;
                 }
-            }
+            });
+
+        if (error) {
+            errorMessage.textContent = `Error uploading ${file.name}: ${error.message}`;
+            errorMessage.classList.add('show');
+            widget.style.display = 'none';
+            submitBtn.disabled = false;
+            return;
         }
+    }
+
+    // Completion State
+    statusText.textContent = "All files uploaded successfully!";
+    bar.style.width = '100%';
+    percentText.textContent = '100%';
+    
+    // Hide widget after a delay
+    setTimeout(() => {
+        widget.style.display = 'none';
+        submitBtn.disabled = false;
+    }, 2000);
+}
 
         // Make removeFile available globally
         window.removeFile = removeFile;
     </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // 1. Your Firebase Configuration (Matches your other pages)
+   const firebaseConfig = {
+    apiKey: "AIzaSyAG2d7QxtzqF5IqluiEuLlFZJ30KpA4pB0",
+    authDomain: "bongaigaon-university.firebaseapp.com",
+    projectId: "bongaigaon-university",
+    storageBucket: "bongaigaon-university.firebasestorage.app",
+    messagingSenderId: "465515357026",
+    appId: "1:465515357026:web:8dcc87ab7048f24da1823b",
+    measurementId: "G-Z6H339XCQC",
+    databaseURL: "https://bongaigaon-university-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // 2. Auth Listener to Auto-Fill Data
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            console.log("User detected, fetching profile for auto-fill...");
+            
+            try {
+                // Fetch the "profile.json" data from Realtime Database
+                const snapshot = await get(ref(db, `users/${user.uid}/profile`));
+                
+                if (snapshot.exists()) {
+                    const profileData = snapshot.val();
+
+                    // Auto-fill Name and Email
+                    document.getElementById('uploaderName').value = profileData.fullName || "";
+                    document.getElementById('uploaderEmail').value = profileData.email || user.email;
+
+                    // Auto-select Uploader Type (Student/Teacher)
+                    if (profileData.userType) {
+                        const typeRadio = document.querySelector(`input[name="uploaderType"][value="${profileData.userType.toLowerCase()}"]`);
+                        if (typeRadio) typeRadio.checked = true;
+                    }
+
+                    // Auto-select Department
+                    if (profileData.department) {
+                        const deptSelect = document.getElementById('department');
+                        // Ensure the value matches your specific dropdown (e.g., 'political-science')
+                        deptSelect.value = profileData.department.toLowerCase();
+                    }
+
+                    // Optional: Make auto-filled fields read-only to prevent errors
+                    document.getElementById('uploaderName').readOnly = true;
+                    document.getElementById('uploaderEmail').readOnly = true;
+                    document.getElementById('uploaderName').style.background = "#f0f0f0";
+                    document.getElementById('uploaderEmail').style.background = "#f0f0f0";
+
+                } else {
+                    // Logged in but no profile found - use Auth email as fallback
+                    document.getElementById('uploaderEmail').value = user.email;
+                }
+            } catch (error) {
+                console.error("Error auto-filling form:", error);
+            }
+        }
+    });
+</script>
 </body>
 </html>

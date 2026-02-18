@@ -353,28 +353,6 @@
             </div>
         </header>
 
-        <div class="main-content">
-            <div class="card">
-                <span class="card-icon">📚</span>
-                <h2>Browse Notes</h2>
-                <p>Access comprehensive notes for all Arts and Commerce subjects. Organized by semester and department.</p>
-                <a href="#" class="btn" onclick="alert('Navigate to your notes repository folder structure')">Explore Notes</a>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">✏️</span>
-                <h2>Contribute</h2>
-                <p>Share your notes with fellow students. Teachers and students welcome to contribute quality content.</p>
-                <a href="#" class="btn btn-secondary" onclick="alert('Create a pull request or upload to the appropriate folder')">Share Notes</a>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">💬</span>
-                <h2>Discussions</h2>
-                <p>Ask questions, discuss topics, and collaborate with peers and teachers.</p>
-                <a href="#" class="btn" onclick="alert('Visit the GitHub Discussions tab')">Join Discussion</a>
-            </div>
-        </div>
 
         <div class="departments">
             <h2>📖 Available Departments</h2>
@@ -441,14 +419,7 @@
                 </div>
             </div>
         </div>
-    
 
-        <div class="features" style="text-align: center;">
-            <h2>Upload Notes</h2>
-            <div style="text-align: left; max-width: 700px; margin: 20px auto;">
-                <h1 style="font-size: 2em; text-align: center;">📤</h1>
-            </div>
-        </div>
         <div class="contribute">
             <h2>📤 Share Your Knowledge</h2>
             <p>Have notes to contribute? Help fellow Education students by sharing your materials!</p>
@@ -457,11 +428,7 @@
         <footer>
             <p><strong>Bongaigaon University Student Notes Repository</strong></p>
             <p style="margin-top: 10px;">Built with ❤️ by students, for students</p>
-            <p style="margin-top: 15px;">
-                <a href="#" onclick="alert('Link to your GitHub repo')">View on GitHub</a> • 
-                <a href="#" onclick="alert('Link to contribution guidelines')">Contribution Guidelines</a> • 
-                <a href="#" onclick="alert('Link to code of conduct')">Code of Conduct</a>
-            </p>
+             <a href="/contact_us.html" >Contact</a>
             <p style="margin-top: 15px; font-size: 0.85em; color: #999;">
                 Not officially affiliated with Bongaigaon University
             </p>
@@ -493,5 +460,105 @@
             animateValue("notes", 0, 1, 2000);
         });
     </script>
+    <div id="top-right-profile" class="profile-widget" onclick="handleProfileNavigation()">
+    <div class="profile-info">
+        <span id="nav-username">Checking...</span>
+        <small id="nav-dept"></small>
+    </div>
+    <div id="nav-avatar" class="avatar-icon">?</div>
+</div>
+
+<style>
+    .profile-widget {
+        position: fixed; top: 20px; right: 20px;
+        display: flex; align-items: center; gap: 12px;
+        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+        padding: 8px 18px; border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000; cursor: pointer;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        transition: all 0.3s ease;
+    }
+    .profile-widget:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+    .profile-info { display: flex; flex-direction: column; text-align: right; }
+    #nav-username { font-weight: 600; color: #333; font-size: 0.9rem; }
+    #nav-dept { color: #667eea; font-size: 0.75rem; text-transform: capitalize; }
+    .avatar-icon {
+        width: 35px; height: 35px; border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white; display: flex; align-items: center; justify-content: center;
+        font-weight: bold; font-size: 1rem;
+    }
+</style>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyAG2d7QxtzqF5IqluiEuLlFZJ30KpA4pB0",
+    authDomain: "bongaigaon-university.firebaseapp.com",
+    projectId: "bongaigaon-university",
+    storageBucket: "bongaigaon-university.firebasestorage.app",
+    messagingSenderId: "465515357026",
+    appId: "1:465515357026:web:8dcc87ab7048f24da1823b",
+    measurementId: "G-Z6H339XCQC",
+    databaseURL: "https://bongaigaon-university-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let authState = { isLoggedIn: false, hasProfile: false };
+
+    onAuthStateChanged(auth, async (user) => {
+        const nameEl = document.getElementById('nav-username');
+        const deptEl = document.getElementById('nav-dept');
+        const avatarEl = document.getElementById('nav-avatar');
+
+        if (user) {
+            authState.isLoggedIn = true;
+            try {
+                const snapshot = await get(ref(db, `users/${user.uid}/profile`));
+                
+                if (snapshot.exists()) {
+                    authState.hasProfile = true;
+                    const data = snapshot.val();
+                    nameEl.textContent = data.fullName;
+                    deptEl.textContent = data.department.replace('-', ' ');
+                    avatarEl.textContent = data.fullName.charAt(0).toUpperCase();
+                } else {
+                    // Logged in but NO profile found (no "profile.json")
+                    authState.hasProfile = false;
+                    nameEl.textContent = "Setup Required";
+                    deptEl.textContent = "Click to finish";
+                    
+                    // Auto-redirect if they are on the index page without a profile
+                    if (window.location.pathname.includes('index.html')) {
+                        window.location.href = 'create_profile.html';
+                    }
+                }
+            } catch (error) {
+                console.error("Profile check failed:", error);
+            }
+        } else {
+            authState.isLoggedIn = false;
+            nameEl.textContent = "Guest";
+            deptEl.textContent = "Click to Login";
+        }
+    });
+
+    // Handle the Click logic
+    window.handleProfileNavigation = () => {
+        if (!authState.isLoggedIn) {
+            window.location.href = 'login.html';
+        } else if (!authState.hasProfile) {
+            window.location.href = 'create_profile.html';
+        } else {
+            window.location.href = 'profile.html';
+        }
+    };
+</script>
 </body>
 </html>

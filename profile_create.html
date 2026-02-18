@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile - Bongaigaon University Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%; max-width: 500px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+        h2 { color: #667eea; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 25px; font-size: 0.9em; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea {
+            width: 100%; padding: 12px;
+            border: 2px solid #e0e0e0; border-radius: 10px;
+            font-size: 1em; font-family: inherit;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .save-btn {
+            width: 100%; padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1.1em; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
+        .message { padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .message.error { background: #ffebee; color: #c62828; }
+        .message.success { background: #e8f5e9; color: #2e7d32; }
+        .show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h2>Set Up Your Profile</h2>
+        <p class="subtitle">Join the Bongaigaon University community.</p>
+        
+        <div id="message" class="message"></div>
+
+        <form id="profileForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" required>
+                    <option value="">-- Select Department --</option>
+                    <option value="none">None</option>
+                        <option value="education">Education</option>
+                        <option value="english">English</option>
+                        <option value="economics">Economics</option>
+                        <option value="political-science">Political Science</option>
+                        <option value="history">History</option>
+                        <option value="philosophy">Philosophy</option>
+                        <option value="sociology">Sociology</option>
+                        <option value="assamese">Assamese</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="bengali">Bengali</option>
+                        <option value="commerce">Commerce</option>
+                        <option value="mathematics">Mathematics</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="userType">I am a...</label>
+                <select id="userType" required>
+                    <option value="" disabled selected>Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio / Description</label>
+                <textarea id="bio" placeholder="Write a short bio about your interests..."></textarea>
+            </div>
+
+            <button type="submit" class="save-btn" id="saveBtn">Create Profile</button>
+        </form>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Your Firebase Config
+    const firebaseConfig = {
+    apiKey: "AIzaSyAG2d7QxtzqF5IqluiEuLlFZJ30KpA4pB0",
+    authDomain: "bongaigaon-university.firebaseapp.com",
+    projectId: "bongaigaon-university",
+    storageBucket: "bongaigaon-university.firebasestorage.app",
+    messagingSenderId: "465515357026",
+    appId: "1:465515357026:web:8dcc87ab7048f24da1823b",
+    measurementId: "G-Z6H339XCQC",
+    databaseURL: "https://bongaigaon-university-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) window.location.href = 'login.html';
+        else currentUser = user;
+    });
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+
+        const profileData = {
+            fullName: document.getElementById('fullName').value,
+            department: document.getElementById('department').value,
+            userType: document.getElementById('userType').value,
+            bio: document.getElementById('bio').value,
+            email: currentUser.email,
+            createdAt: new Date().toISOString()
+        };
+
+        try {
+            // Save to users/<uid>/profile
+            await set(ref(database, 'users/' + currentUser.uid + '/profile'), profileData);
+            
+            document.getElementById('message').textContent = "Profile Created!";
+            document.getElementById('message').className = "message success show";
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        } catch (error) {
+            alert("Error: " + error.message);
+            saveBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

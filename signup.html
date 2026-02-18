@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Bongaigaon University Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Logo/Header Section */
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .signup-header h1 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .signup-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+        }
+
+        /* Signup Card */
+        .signup-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .signup-card h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .signup-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .step.completed .step-circle {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75em;
+            color: #999;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .step.active .step-label,
+        .step.completed .step-label {
+            color: #667eea;
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        input.error {
+            border-color: #e74c3c;
+        }
+
+        input.success {
+            border-color: #4caf50;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* OTP Input */
+        .otp-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 55px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Send OTP Button */
+        .send-otp-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .send-otp-btn {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .send-otp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .send-otp-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Timer */
+        .otp-timer {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .otp-timer.show {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        /* Message */
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Social Login */
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 15px;
+            color: #999;
+            font-size: 0.9em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .google-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Back to Home */
+        .back-home {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back-home a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .signup-card {
+                padding: 30px 25px;
+            }
+
+            .signup-header h1 {
+                font-size: 1.8em;
+            }
+
+            .otp-input {
+                width: 45px;
+                height: 50px;
+                font-size: 1.3em;
+            }
+
+            .step-label {
+                font-size: 0.65em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <!-- Header -->
+        <div class="signup-header">
+            <div class="logo-icon">🎓</div>
+            <h1>Bongaigaon University</h1>
+            <p>Student Notes Repository</p>
+        </div>
+
+        <!-- Signup Card -->
+        <div class="signup-card">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join our community to share and access notes</p>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="progress-line" id="progressLine"></div>
+                <div class="step active" id="step1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Email</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Password</div>
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div class="message" id="message"></div>
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+                <!-- Step 1: Email -->
+                <div class="form-step active" id="formStep1">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmEmail">Confirm Email <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input 
+                                type="email" 
+                                id="confirmEmail" 
+                                name="confirmEmail" 
+                                placeholder="Confirm your email"
+                                required
+                            >
+                        </div>
+                        <div class="error-message" id="confirmEmailError"></div>
+                        <div class="success-message" id="confirmEmailSuccess">Emails match! ✓</div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" onclick="goToStep2()">
+                            Next →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Password -->
+                <div class="form-step" id="formStep2">
+                    <div class="form-group">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Create a strong password"
+                                required
+                            >
+                        </div>
+                        <div class="error-message" id="passwordError"></div>
+                        <div style="font-size: 0.85em; color: #999; margin-top: 5px;">
+                            Password must be at least 8 characters
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                placeholder="Confirm your password"
+                                required
+                            >
+                        </div>
+                        <div class="error-message" id="confirmPasswordError"></div>
+                        <div class="success-message" id="confirmPasswordSuccess">Passwords match! ✓</div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep1()">
+                            ← Back
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Create Account
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="divider" style="margin-top: 30px;">
+                <span>or continue with</span>
+            </div>
+
+            <button class="google-btn" onclick="handleGoogleSignUp()">
+                <span>🔍</span>
+                <span>Sign up with Google</span>
+            </button>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="back-home">
+            <a href="index.html">
+                <span>←</span>
+                <span>Back to Home</span>
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+    // 1. Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+        getAuth, 
+        createUserWithEmailAndPassword, 
+        sendEmailVerification, 
+        signInWithPopup, 
+        GoogleAuthProvider,
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // 2. Your web app's Firebase configuration
+    // REPLACE THESE with your actual keys from the Firebase Console
+    const firebaseConfig = {
+    apiKey: "AIzaSyAG2d7QxtzqF5IqluiEuLlFZJ30KpA4pB0",
+    authDomain: "bongaigaon-university.firebaseapp.com",
+    projectId: "bongaigaon-university",
+    storageBucket: "bongaigaon-university.firebasestorage.app",
+    messagingSenderId: "465515357026",
+    appId: "1:465515357026:web:8dcc87ab7048f24da1823b",
+    measurementId: "G-Z6H339XCQC"
+  };
+
+    // 3. Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // --- UI LOGIC ---
+    let currentStep = 1;
+
+    // Make functions available to the buttons (since this is a module)
+    window.goToStep1 = () => updateStep(1);
+    window.goToStep2 = () => {
+        const email = document.getElementById('email').value;
+        const confirmEmail = document.getElementById('confirmEmail').value;
+        if (!email || email !== confirmEmail) {
+            showMessage('Please ensure emails match and are filled.', 'error');
+            return;
+        }
+        updateStep(2);
+    };
+
+    function updateStep(step) {
+        currentStep = step;
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
+        
+        document.getElementById('formStep' + step).classList.add('active');
+        document.getElementById('step' + step).classList.add('active');
+        
+        if (step === 2) document.getElementById('step1').classList.add('completed');
+        
+        const progressWidth = ((step - 1) / 1) * 100;
+        document.getElementById('progressLine').style.width = progressWidth + '%';
+        document.getElementById('message').classList.remove('show');
+    }
+
+    function showMessage(text, type) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = text;
+        messageDiv.className = `message ${type} show`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- FIREBASE AUTH LOGIC ---
+
+    // Google Sign-Up
+    window.handleGoogleSignUp = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            showMessage(`Welcome ${result.user.displayName}! Redirecting...`, 'success');
+            setTimeout(() => window.location.href = 'index.html', 2000);
+        } catch (error) {
+            showMessage(error.message, 'error');
+        }
+    };
+
+    // Email/Password Sign-Up
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match', 'error');
+            return;
+        }
+
+        try {
+            // 1. Create the user
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // 2. Send verification email
+            await sendEmailVerification(userCredential.user);
+            
+            // 3. Force sign out immediately so they can't browse unverified
+            await signOut(auth);
+
+            showMessage('Account created! Please check your email for a verification link before logging in.', 'success');
+            
+            // Redirect to login after 5 seconds
+            setTimeout(() => window.location.href = 'login.html', 5000);
+
+        } catch (error) {
+            let errorMsg = "An error occurred during sign up.";
+            if (error.code === 'auth/email-already-in-use') errorMsg = "Email is already registered.";
+            if (error.code === 'auth/weak-password') errorMsg = "Password is too weak.";
+            showMessage(errorMsg, 'error');
+        }
+    });
+</script>
+</body>
+</html>
